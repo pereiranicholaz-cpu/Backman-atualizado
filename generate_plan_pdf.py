@@ -281,8 +281,8 @@ def build_pdf(filename="Plano_Arquitetura_Backend_SmartFlow.pdf"):
 
     # 3. Estrutura Proposta de Pastas
     story.append(Paragraph("3. Estrutura Proposta de Pastas", h1_style))
-    tree_text = """SmartFlowIA/
-├── Backend/
+    tree_text = """otis-smartflow/
+├── backend/
 │   ├── smartflow-api/                 # Backend Java Spring Boot
 │   │   ├── pom.xml                    # Spring Boot 3.3.4, Java 17, JPA, Web, Security, Lombok
 │   │   └── src/
@@ -313,7 +313,7 @@ def build_pdf(filename="Plano_Arquitetura_Backend_SmartFlow.pdf"):
 │       │   └── charts.py              # Gráficos embutidos (Matplotlib)
 │       └── templates/                 # Estilos, cabeçalhos, logos da OTIS
 │
-└── FrontEnd/
+└── frontend/
     └── prototipo/                     # Frontend React já existente"""
 
     tree_table = Table([[Paragraph(f"<pre>{tree_text}</pre>", code_block_style)]], colWidths=[515])
@@ -397,18 +397,18 @@ cd Backend/smartflow-api
 .\\mvnw.cmd test
 
 # Iniciar Serviço de Relatórios Python (Porta 8000)
-cd Backend/smartflow-reports
+cd backend/smartflow-reports
 uvicorn main:app --port 8000 --reload
 # Documentação Swagger Python: http://localhost:8000/docs
 
 # Iniciar Backend Java Spring Boot (Porta 8080)
-cd Backend/smartflow-api
+cd backend/smartflow-api
 .\\mvnw.cmd spring-boot:run
 # Swagger UI Spring Boot: http://localhost:8080/swagger-ui.html
 # Console H2 Database:   http://localhost:8080/h2-console
 
 # Iniciar Frontend React + Vite (Porta 3000 / 5173)
-cd FrontEnd/prototipo
+cd frontend/prototipo
 npm run dev"""
 
     cmd_table = Table([[Paragraph(f"<pre>{verif_text}</pre>", code_block_style)]], colWidths=[515])

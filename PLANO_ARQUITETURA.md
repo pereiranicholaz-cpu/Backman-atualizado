@@ -68,8 +68,8 @@ graph TD
 ## 3. Estrutura de Pastas do Projeto
 
 ```
-SmartFlowIA/
-├── Backend/
+otis-smartflow/
+├── backend/
 │   ├── smartflow-api/                 # Backend Java Spring Boot
 │   │   ├── pom.xml                    # Spring Boot 3.3.4, Java 17, JPA, Web, Security, Lombok
 │   │   └── src/
@@ -93,7 +93,7 @@ SmartFlowIA/
 │           ├── financial_dossier.py   # Dossiê Financeiro & DRE (Excel)
 │           └── predictive_inventory.py# Inventário Preditivo & Falhas (Excel)
 │
-└── FrontEnd/
+└── frontend/
     └── prototipo/                     # Frontend React + Vite
 ```
 
@@ -129,14 +129,14 @@ Baseado nos relatórios definidos no protótipo (`ReportsModule.tsx`), o serviç
 
 ### 1. Iniciar o Serviço de Relatórios Python (Porta 8000)
 ```powershell
-cd Backend/smartflow-reports
+cd backend/smartflow-reports
 uvicorn main:app --port 8000 --reload
 ```
 - Swagger / OpenAPI do Python: `http://localhost:8000/docs`
 
 ### 2. Iniciar o Backend Java Spring Boot (Porta 8080)
 ```powershell
-cd Backend/smartflow-api
+cd backend/smartflow-api
 .\mvnw.cmd spring-boot:run
 ```
 - Swagger UI do Spring Boot: `http://localhost:8080/swagger-ui.html`
@@ -144,6 +144,6 @@ cd Backend/smartflow-api
 
 ### 3. Iniciar o Frontend React (Porta 3000 / 5173)
 ```powershell
-cd FrontEnd/prototipo
+cd frontend/prototipo
 npm run dev
 ```
