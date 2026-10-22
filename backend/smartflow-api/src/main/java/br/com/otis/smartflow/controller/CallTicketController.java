@@ -58,4 +58,16 @@ public class CallTicketController {
             return ResponseEntity.ok(callTicketRepository.save(ticket));
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    @PatchMapping("/{id}/reassign")
+    @Operation(summary = "Reatribuir chamado para outro técnico de campo")
+    public ResponseEntity<CallTicket> reassignTechnician(@PathVariable String id,
+                                                         @RequestParam String technicianId,
+                                                         @RequestParam String technicianName) {
+        return callTicketRepository.findById(id).map(ticket -> {
+            ticket.setAssignedTechnicianId(technicianId);
+            ticket.setAssignedTechnicianName(technicianName);
+            return ResponseEntity.ok(callTicketRepository.save(ticket));
+        }).orElse(ResponseEntity.notFound().build());
+    }
 }

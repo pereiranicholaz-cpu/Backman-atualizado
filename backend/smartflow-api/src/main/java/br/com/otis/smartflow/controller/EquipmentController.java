@@ -42,4 +42,22 @@ public class EquipmentController {
     public List<Equipment> getEquipmentsByRisk(@PathVariable String riskLevel) {
         return equipmentRepository.findByRiskLevel(riskLevel.toUpperCase());
     }
+
+    @PostMapping
+    @Operation(summary = "Cadastrar novo equipamento na frota")
+    public Equipment createEquipment(@RequestBody Equipment equipment) {
+        if (equipment.getId() == null || equipment.getId().isBlank()) {
+            equipment.setId("eq-" + System.currentTimeMillis());
+        }
+        return equipmentRepository.save(equipment);
+    }
+
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Atualizar status operacional do equipamento (OPERACIONAL, EM_RISCO, PARADO, MANUTENCAO)")
+    public ResponseEntity<Equipment> updateEquipmentStatus(@PathVariable String id, @RequestParam String status) {
+        return equipmentRepository.findById(id).map(eq -> {
+            eq.setStatus(status.toUpperCase());
+            return ResponseEntity.ok(equipmentRepository.save(eq));
+        }).orElse(ResponseEntity.notFound().build());
+    }
 }

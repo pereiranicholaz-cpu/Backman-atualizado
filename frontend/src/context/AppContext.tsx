@@ -50,6 +50,7 @@ import {
   checkPreventiveMismatch 
 } from '../utils/geoUtils';
 import { generateSmartFlowAlerts, reconcileSmartFlowAlerts } from '../utils/smartFlowAI';
+import { apiService } from '../services/apiService';
 
 export type ActiveView = 
   | 'dashboard'
@@ -224,6 +225,10 @@ interface AppContextType {
 
   // Demo / Presentation controls
   resetToCleanState: () => void;
+
+  // Backend REST API Sync
+  apiConnection: { online: boolean; checked: boolean };
+  refreshFromBackend: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -296,7 +301,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const saved = localStorage.getItem(STORAGE_PREFIX + 'calls');
     return saved ? JSON.parse(saved) : INITIAL_CALLS;
   });
-  const [contracts] = useState<Contract[]>(INITIAL_CONTRACTS);
+  const [contracts, setContracts] = useState<Contract[]>(INITIAL_CONTRACTS);
   const [parts, setParts] = useState<Part[]>(INITIAL_PARTS);
   const [partRequests, setPartRequests] = useState<PartRequest[]>(() => {
     const saved = localStorage.getItem(STORAGE_PREFIX + 'part_requests');
@@ -399,6 +404,83 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  // Backend REST API Connection State
+  const [apiConnection, setApiConnection] = useState<{ online: boolean; checked: boolean }>({
+    online: false,
+    checked: false
+  });
+
+  const refreshFromBackend = async () => {
+    try {
+      const health = await apiService.system.checkHealth();
+      setApiConnection({ online: health.apiOnline, checked: true });
+      if (health.apiOnline) {
+        const [apiEqs, apiTechs, apiCalls, apiContracts, apiParts, apiEmployees, apiCampaigns, apiAlerts] = await Promise.all([
+          apiService.equipments.getAll(),
+          apiService.technicians.getAll(),
+          apiService.calls.getAll(),
+          apiService.contracts.getAll(),
+          apiService.parts.getAll(),
+          apiService.employees.getAll(),
+          apiService.campaigns.getAll(),
+          apiService.alerts.getAll()
+        ]);
+
+        if (apiEqs && apiEqs.length > 0) {
+          setEquipments(prev => {
+            const apiIds = new Set(apiEqs.map(e => e.id));
+            return [...apiEqs, ...prev.filter(e => !apiIds.has(e.id))];
+          });
+        }
+        if (apiTechs && apiTechs.length > 0) {
+          setTechnicians(prev => {
+            const apiIds = new Set(apiTechs.map(t => t.id));
+            return [...apiTechs, ...prev.filter(t => !apiIds.has(t.id))];
+          });
+        }
+        if (apiCalls && apiCalls.length > 0) {
+          setCalls(prev => {
+            const apiIds = new Set(apiCalls.map(c => c.id));
+            return [...apiCalls, ...prev.filter(c => !apiIds.has(c.id))];
+          });
+        }
+        if (apiContracts && apiContracts.length > 0) {
+          setContracts(apiContracts);
+        }
+        if (apiParts && apiParts.length > 0) {
+          setParts(prev => {
+            const apiIds = new Set(apiParts.map(p => p.id));
+            return [...apiParts, ...prev.filter(p => !apiIds.has(p.id))];
+          });
+        }
+        if (apiEmployees && apiEmployees.length > 0) {
+          setEmployees(prev => {
+            const apiIds = new Set(apiEmployees.map(e => e.id));
+            return [...apiEmployees, ...prev.filter(e => !apiIds.has(e.id))];
+          });
+        }
+        if (apiCampaigns && apiCampaigns.length > 0) {
+          setCampaigns(prev => {
+            const apiIds = new Set(apiCampaigns.map(c => c.id));
+            return [...apiCampaigns, ...prev.filter(c => !apiIds.has(c.id))];
+          });
+        }
+        if (apiAlerts && apiAlerts.length > 0) {
+          setAlerts(prev => {
+            const apiIds = new Set(apiAlerts.map(a => a.id));
+            return [...apiAlerts, ...prev.filter(a => !apiIds.has(a.id))];
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Backend API Sync note:', err);
+    }
+  };
+
+  useEffect(() => {
+    refreshFromBackend();
+  }, []);
 
   // Sync state to local storage
   useEffect(() => {
@@ -604,6 +686,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       historicalFailures: []
     };
     setEquipments((prev) => [newEq, ...prev]);
+    apiService.equipments.create(newEq).catch(err => console.debug('Offline equipment save:', err));
     return newEq;
   };
 
@@ -781,6 +864,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     setCalls((prev) => [newCall, ...prev]);
+    apiService.calls.create(newCall).catch(err => console.debug('Offline call save:', err));
 
     // Update assigned technician status to A_CAMINHO and link currentCallId
     if (chosenTechId) {
@@ -949,6 +1033,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       title: 'Status Atualizado',
       message: `Chamado atualizado com sucesso.`
     });
+    apiService.calls.updateStatus(callId, status).catch(err => console.debug('Offline call status save:', err));
   };
 
   const reassignTechnician = (callId: string, newTechnicianId: string, overrideReason?: string) => {
@@ -997,6 +1082,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return t;
       })
     );
+
+    apiService.calls.reassign(callId, newTechnicianId, tech.name).catch(err => console.debug('Offline reassign save:', err));
 
     addToast({
       type: 'success',
@@ -1784,7 +1871,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         unfixTechnicianFromAddress,
         theme,
         setTheme,
-        resetToCleanState
+        resetToCleanState,
+        apiConnection,
+        refreshFromBackend
       }}
     >
       {children}

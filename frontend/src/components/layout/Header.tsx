@@ -29,7 +29,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 export const Header: React.FC<HeaderProps> = ({ onOpenAIChat, onToggleMobileMenu }) => {
-  const { currentUser, switchRole, logout, alerts, setActiveView, resetToCleanState } = useApp();
+  const { currentUser, switchRole, logout, alerts, setActiveView, resetToCleanState, apiConnection, refreshFromBackend } = useApp();
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const roleRef = useRef<HTMLDivElement>(null);
@@ -132,6 +132,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAIChat, onToggleMobileMenu
             </div>
           )}
         </div>
+
+        {/* Backend REST API Connection Status */}
+        <button
+          onClick={refreshFromBackend}
+          title={apiConnection.online ? "Backend Spring Boot Conectado (Porta 8080). Clique para sincronizar." : "Modo Local Ativo. Clique para tentar reconectar ao Backend."}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-semibold border transition-all cursor-pointer shadow-sm ${
+            apiConnection.online
+              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+              : 'bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20'
+          }`}
+        >
+          <span className={`w-2 h-2 rounded-full ${apiConnection.online ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+          <span className="hidden lg:inline font-mono">{apiConnection.online ? 'API 8080 ON' : 'API OFFLINE'}</span>
+        </button>
 
         {/* Assistente IA */}
         {currentUser.role !== 'TECNICO' && currentUser.role !== 'ATENDENTE' && (
