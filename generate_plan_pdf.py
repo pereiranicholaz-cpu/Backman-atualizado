@@ -311,10 +311,7 @@ def build_pdf(filename="Plano_Arquitetura_Backend_SmartFlow.pdf"):
 │       │   ├── financial_dossier.py   # Dossiê Financeiro & DRE (Excel)
 │       │   ├── predictive_report.py   # Inventário Preditivo & Falhas (Excel/PDF)
 │       │   └── charts.py              # Gráficos embutidos (Matplotlib)
-│       └── templates/                 # Estilos, cabeçalhos, logos da OTIS
-│
-└── frontend/
-    └── prototipo/                     # Frontend React já existente"""
+└── frontend/                          # Frontend React + Vite"""
 
     tree_table = Table([[Paragraph(f"<pre>{tree_text}</pre>", code_block_style)]], colWidths=[515])
     tree_table.setStyle(TableStyle([
@@ -408,7 +405,7 @@ cd backend/smartflow-api
 # Console H2 Database:   http://localhost:8080/h2-console
 
 # Iniciar Frontend React + Vite (Porta 3000 / 5173)
-cd frontend/prototipo
+cd frontend
 npm run dev"""
 
     cmd_table = Table([[Paragraph(f"<pre>{verif_text}</pre>", code_block_style)]], colWidths=[515])

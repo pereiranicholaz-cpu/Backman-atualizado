@@ -93,15 +93,14 @@ otis-smartflow/
 │           ├── financial_dossier.py   # Dossiê Financeiro & DRE (Excel)
 │           └── predictive_inventory.py# Inventário Preditivo & Falhas (Excel)
 │
-└── frontend/
-    └── prototipo/                     # Frontend React + Vite
+└── frontend/                          # Frontend React + Vite
 ```
 
 ---
 
 ## 4. Modelagem de Relatórios & Dashboards Suportados
 
-Baseado nos relatórios definidos no protótipo (`ReportsModule.tsx`), o serviço Python fornece:
+Baseado nos relatórios definidos no frontend (`ReportsModule.tsx`), o serviço Python fornece:
 
 1. **Relatório Executivo Nacional (Presidência)**:
    - **Formato:** PDF diagramado em alta resolução.
@@ -144,6 +143,6 @@ cd backend/smartflow-api
 
 ### 3. Iniciar o Frontend React (Porta 3000 / 5173)
 ```powershell
-cd frontend/prototipo
+cd frontend
 npm run dev
 ```

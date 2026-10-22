@@ -4,7 +4,7 @@
   "description": "OTIS SmartFlow IA - Plataforma Integrada de Gestão, Telemetria e Inteligência Operacional",
   "private": true,
   "scripts": {
-    "dev:frontend": "npm run dev --prefix frontend/prototipo",
+    "dev:frontend": "npm run dev --prefix frontend",
     "dev:reports": "cd backend/smartflow-reports && uvicorn main:app --port 8000 --reload",
     "dev:api": "cd backend/smartflow-api && .\\mvnw.cmd spring-boot:run"
   }

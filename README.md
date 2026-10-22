@@ -11,8 +11,7 @@ otis-smartflow/
 ├── backend/
 │   ├── smartflow-api/       # Backend Java 17 + Spring Boot 3.3.4 (REST API, H2/PostgreSQL)
 │   └── smartflow-reports/   # Analytics & Relatórios Python 3.12 + FastAPI (PDF & Excel)
-├── frontend/
-│   └── prototipo/           # Aplicação Frontend React 19 + Vite + TypeScript + Tailwind
+├── frontend/                # Aplicação Frontend React 19 + Vite + TypeScript + Tailwind
 ├── PLANO_ARQUITETURA.md     # Documentação detalhada da arquitetura do sistema
 ├── Plano_Arquitetura_Backend_SmartFlow.pdf # Versão executiva em PDF da arquitetura
 ├── supabase_smartflow_schema.sql # Script SQL completo do banco de dados
@@ -45,7 +44,7 @@ otis-smartflow/
    - Documentação FastAPI: `http://localhost:8000/docs`.
 
 3. **Frontend (React + Vite + TypeScript):**
-   - Localizado em `frontend/prototipo/`.
+   - Localizado em `frontend/`.
    - Dashboards interativos (Presidente, Gerente, Supervisor, Técnico, Atendente) e emissão de relatórios.
    - Acesso padrão: `http://localhost:3000` ou `http://localhost:5173`.
 
@@ -67,7 +66,7 @@ cd backend/smartflow-api
 
 ### 3. Iniciar o Frontend React (Porta 3000 / 5173)
 ```powershell
-cd frontend/prototipo
+cd frontend
 npm run dev
 ```
 
